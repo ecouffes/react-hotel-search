@@ -1,5 +1,13 @@
 $bgColor: #eee;
+$txColor: #444;
 
 body {
     background-color: $bgColor;
+    text-align: center;
+    color: $txColor;
 }
+
+@import 'GeocodeResult';
+@import 'Map';
+
+
