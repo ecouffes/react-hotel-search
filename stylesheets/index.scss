@@ -1,13 +1,18 @@
-$bgColor: #eee;
-$txColor: #444;
+$base-bg-color: #eee;
+$base-tx-color: #444;
 
 body {
-    background-color: $bgColor;
-    text-align: center;
-    color: $txColor;
+    background-color: $base-bg-color;
+    color: $base-tx-color;
 }
 
+@import 'reset';
+@import 'App';
+@import 'SearchForm';
 @import 'GeocodeResult';
 @import 'Map';
+@import 'HotelsTable';
+@import 'HotelsClickableTh';
+
 
 

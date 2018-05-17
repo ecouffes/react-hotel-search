@@ -20,7 +20,7 @@ const Map = ({ location }) => (
     containerElement={(<div />)}
     mapElement={(<div className="map" />)}
     location={location}
-    marker={{ position: location }}   // location: location
+    marker={{ position: location }}
   />
 );
 
