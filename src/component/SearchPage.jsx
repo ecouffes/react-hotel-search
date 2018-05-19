@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+
 import _ from 'lodash';
 import queryString from 'query-string';
 
-import SearchForm from '../component/SearchForm';
-import GeocodeResult from '../component/GeocodeResult';
-import Map from '../component/Map';
-import HotelsTable from '../component/HotelsTable';
+import SearchForm from '../containers/SearchForm';
+import GeocodeResult from './GeocodeResult';
+import Map from './Map';
+import HotelsTable from './HotelsTable';
 
 import { geocode } from '../domain/Geocoder';
 import { searchHotelByLocation } from '../domain/HotelRepository';
@@ -38,21 +40,11 @@ class SearchPage extends Component {
   // constructor => componentWillMount => render => componentDidMount
   // ページがrenderされた後に実行
   componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => {
-      // render()の強制実行
-      // setStateを用いずに、stateを変更した場合
-      this.forceUpdate();
-    });
     // const place = this.getPlaceParam();
     //     // // 楽天APIを叩いてホテル検索実行
     //     // if (place) {
     //     //   this.startSearch(place);
     //     // }
-  }
-
-  // 本componentが無くなる時に呼ばれる関数
-  componentWillUnmount() {
-    this.unsubscribe();
   }
 
   getPlaceParam() {
@@ -106,13 +98,6 @@ class SearchPage extends Component {
       });
   }
 
-  // EventHandlerにて、actionを発行。
-  // reducerにてstateを更新
-  handlePlaceChange(e) {
-    e.preventDefault();
-    this.props.store.dispatch({ type: 'CHANGE_PLACE', place: e.target.value });
-  }
-
   // 子から渡されたstate(place)を処理
   handlePlaceSubmit(e) {
     e.preventDefault();
@@ -130,15 +115,13 @@ class SearchPage extends Component {
   }
 
   render() {
-    const state = this.props.store.getState();
+    // console.log(this.props);
     return (
       <div className="search-page">
         <h1 className="app-title">ホテル検索</h1>
         {/* 子に渡すpropsが関数の場合、子のstateを引数に入れることで、 */}
         {/* 子 => 親へstateを渡す事ができる */}
         <SearchForm
-          place={state.place}
-          onPlaceChange={e => this.handlePlaceChange(e)}
           onSubmit={e => this.handlePlaceSubmit(e)}
         />
         {/*
@@ -166,11 +149,6 @@ class SearchPage extends Component {
 SearchPage.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
-  store: PropTypes.shape({
-    subscribe: PropTypes.func,
-    getState: PropTypes.func,
-    dispatch: PropTypes.func,
-  }).isRequired,
 };
 
 export default SearchPage;

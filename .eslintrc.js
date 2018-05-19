@@ -9,6 +9,10 @@ module.exports = {
     "browser": true
   },
   "rules": {
+    "no-underscore-dangle": [
+      "error",
+      { "allow": ["__REDUX_DEVTOOLS_EXTENSION__"]}
+    ],
     "block-spacing": 2,
     "camelcase": 2,
     "curly": 2,
