@@ -1,7 +1,9 @@
 $base-bg-color: #eee;
 $base-tx-color: #444;
+$base-margin: 40px;
 
 body {
+    margin: 0;
     background-color: $base-bg-color;
     color: $base-tx-color;
 }
