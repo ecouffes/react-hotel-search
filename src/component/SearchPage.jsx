@@ -96,8 +96,9 @@ class SearchPage extends Component {
       });
   }
 
-  handlePlaceChange(place) {
-    this.setState({ place });
+  handlePlaceChange(e) {
+    e.preventDefault();
+    this.props.onPlaceChange(e.target.value);
   }
 
   // 子から渡されたstate(place)を処理
@@ -123,10 +124,11 @@ class SearchPage extends Component {
         {/* 子に渡すpropsが関数の場合、子のstateを引数に入れることで、 */}
         {/* 子 => 親へstateを渡す事ができる */}
         <SearchForm
-          place={this.state.place}
-          onPlaceChange={place => this.handlePlaceChange(place)}
+          place={this.props.place}
+          onPlaceChange={e => this.handlePlaceChange(e)}
           onSubmit={e => this.handlePlaceSubmit(e)}
         />
+        {/*
         <div className="result-area">
           <Map location={this.state.location} />
           <div className="result-right">
@@ -142,6 +144,7 @@ class SearchPage extends Component {
             />
           </div>
         </div>
+        */}
       </div>
     );
   }
@@ -150,6 +153,8 @@ class SearchPage extends Component {
 SearchPage.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
+  onPlaceChange: PropTypes.func.isRequired,
+  place: PropTypes.string.isRequired,
 };
 
 export default SearchPage;
