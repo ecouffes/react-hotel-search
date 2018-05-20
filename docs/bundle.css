@@ -19,6 +19,8 @@ ul {
   margin-right: 40px;
   padding-right: 40px;
   border-right: 1px solid #ccc; }
+  .left-navi > li {
+    width: 5rem; }
 
 .result-area {
   display: flex; }
