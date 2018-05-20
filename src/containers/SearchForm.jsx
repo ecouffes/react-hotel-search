@@ -9,6 +9,9 @@ const SearchForm = props => (
     className="search-form"
     onSubmit={(e) => {
       e.preventDefault();
+        // 親の親のReact Routerから渡されたhistory API の ラッパーオブジェクトhistory
+        // へアクセスして、pushState をcall。getパラメータを付与
+      props.history.push(`/?place=${props.place}`);
       props.startSearch();
     }}
   >
@@ -27,6 +30,7 @@ const SearchForm = props => (
 );
 
 SearchForm.propTypes = {
+  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   place: PropTypes.string.isRequired,
   startSearch: PropTypes.func.isRequired,
   setPlace: PropTypes.func.isRequired,

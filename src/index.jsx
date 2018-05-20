@@ -8,8 +8,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-// import App from './component/App';
-import SearchPage from './component/SearchPage';
+import App from './component/App';
 import reducer from './reducers/index';
 
 const store = createStore(
@@ -21,10 +20,7 @@ const store = createStore(
 ReactDOM.render(
   // Provider がstoreをcontextへ格納
   <Provider store={store}>
-    <SearchPage
-      history={history}
-      location={location}
-    />
+    <App />
   </Provider>,
   document.querySelector('.container'),
 );

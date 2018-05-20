@@ -1,4 +1,4 @@
-import { geocode } from "../domain/Geocoder";
+import { geocode } from '../domain/Geocoder';
 import { searchHotelByLocation } from '../domain/HotelRepository';
 
 /**
@@ -13,8 +13,11 @@ import { searchHotelByLocation } from '../domain/HotelRepository';
  * @return {function(*): *}
  */
 export const setPlace = place => dispatch => dispatch({ type: 'CHANGE_PLACE', place });
+
 export const setErrorMessage = message => dispatch => dispatch({ type: 'CHANGE_ERROR_MESSAGE', message });
+
 export const setHotels = hotels => dispatch => dispatch({ type: 'CHANGE_HOTELS', hotels });
+
 export const setSortKey = sortKey => dispatch => dispatch({ type: 'CHANGE_SORT_KEY', sortKey });
 
 export const startSearch = () => (dispatch, getState) => {
@@ -25,7 +28,6 @@ export const startSearch = () => (dispatch, getState) => {
           dispatch({ type: 'GEOCODE_FETCHED', address, location });
           // 楽天トラベルAPI call
           return searchHotelByLocation(location);
-          break;
         }
         case 'ZERO_RESULTS' : {
           dispatch(setErrorMessage('結果が見つかりませんでした'));

@@ -1,4 +1,16 @@
 import { combineReducers } from 'redux';
+import queryString from 'query-string';
+
+const getPlaceParam = () => {
+  // ?key=value&key=value 文字列をObject形式にパース
+  const params = queryString.parse(location.search);
+  const place = params.place;
+  // getオプションにplaceがが一文字でも存在していたら
+  if (place && place.length > 0) {
+    return place;
+  }
+  return null;
+};
 
 /**
  * reducer
@@ -8,7 +20,7 @@ import { combineReducers } from 'redux';
  * @param action
  * @return {*} newState || previousState
  */
-const place = (state = '東京タワー', action) => {
+const place = (state = getPlaceParam() || '東京タワー', action) => {
   switch (action.type) {
     case 'CHANGE_PLACE':
       return action.place;  // newState
