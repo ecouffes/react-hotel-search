@@ -1,1 +1,3 @@
-react_practice_01
+# React Hotel Search
+
+Hotel search pages with Rakuten API and Google Map API
