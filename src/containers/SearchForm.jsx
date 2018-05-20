@@ -1,21 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';  // StoreとComponentをBindingする関数
+import { connect } from 'react-redux';
 
-// contextに入っているStoreが保持するstateを、当該componentのpropsへ変換
-// viewの表示に必要なprops
-const mapStateToProps = state => ({
-  place: state.place,
-});
-
-// contentに入っているStoreが保持するaction dispatcherを、当該componentのpropsへ変換
-// action発行時に必要なprops
-const mapDispatchToProps = dispatch => ({
-  onPlaceChange: place => dispatch({ type: 'CHANGE_PLACE', place }),
-});
+import { setPlace, startSearch } from '../actions';
 
 const SearchForm = props => (
-  <form className="search-form" onSubmit={e => props.onSubmit(e)}>
+  <form
+    className="search-form"
+    onSubmit={(e) => {
+      e.preventDefault();
+      props.startSearch();
+    }}
+  >
     <input
       className="place-input"
       type="text"
@@ -23,7 +19,7 @@ const SearchForm = props => (
       value={props.place}
       onChange={(e) => {
         e.preventDefault();
-        props.onPlaceChange(e.target.value);
+        props.setPlace(e.target.value);
       }}
     />
     <input className="submit-button" type="submit" value="検索" />
@@ -32,12 +28,15 @@ const SearchForm = props => (
 
 SearchForm.propTypes = {
   place: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onPlaceChange: PropTypes.func.isRequired,
+  startSearch: PropTypes.func.isRequired,
+  setPlace: PropTypes.func.isRequired,
 };
 
-// Storeが保持するstateとaction dispatcherを当該componentに結合
-const ConnectedSearchForm
-  = connect(mapStateToProps, mapDispatchToProps)(SearchForm);
+// contextに入っているStoreが保持するstateを、当該componentのpropsへ変換
+// viewの表示に必要なprops
+const mapStateToProps = state => ({
+  place: state.place,
+});
 
-export default ConnectedSearchForm;
+// Storeが保持するstateとaction dispatcher(action creator)を当該componentに結合
+export default connect(mapStateToProps, { setPlace, startSearch })(SearchForm);

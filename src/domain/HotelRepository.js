@@ -19,8 +19,9 @@ export const searchHotelByLocation = (location) => {
     longitude: location.lng,
   };
   return Rakuten.Travel.simpleHotelSearch(params)
-    .then(result =>
-      result.data.hotels.map((hotel) => {
+    .then((result) => {
+      console.log(result);
+      return result.data.hotels.map((hotel) => {
         // console.log(hotel);
         const basicInfo = hotel.hotel[0].hotelBasicInfo;
         const distance = geolib.getDistance(
@@ -37,7 +38,7 @@ export const searchHotelByLocation = (location) => {
           reviewCount: basicInfo.reviewCount,
           distance,
         };
-      }),
-    );
+      });
+    });
 };
 

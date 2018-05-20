@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-
-import _ from 'lodash';
 import queryString from 'query-string';
 
 import SearchForm from '../containers/SearchForm';
@@ -10,42 +9,7 @@ import GeocodeResult from './GeocodeResult';
 import Map from './Map';
 import HotelsTable from './HotelsTable';
 
-import { geocode } from '../domain/Geocoder';
-import { searchHotelByLocation } from '../domain/HotelRepository';
-
-/**
- * ホテル
- * @param hotels {Array}
- * @param sortKey {String}
- * @return {*|Array}
- */
-const sortedHotels = (hotels, sortKey) => _.sortBy(hotels, hotel => hotel[sortKey]);
-
 class SearchPage extends Component {
-
-  constructor(props) {
-    // console.log(props) // React Router が渡すpropsを確認
-    super(props);
-    this.state = {
-      place: this.getPlaceParam() || '東京タワー',
-      location: {
-        lat: 35.6585805,
-        lng: 139.7454329,
-      },
-      hotels: [],
-      sortKey: 'price',
-    };
-  }
-
-  // constructor => componentWillMount => render => componentDidMount
-  // ページがrenderされた後に実行
-  componentDidMount() {
-    // const place = this.getPlaceParam();
-    //     // // 楽天APIを叩いてホテル検索実行
-    //     // if (place) {
-    //     //   this.startSearch(place);
-    //     // }
-  }
 
   getPlaceParam() {
     // ?key=value&key=value 文字列をObject形式にパース
@@ -60,59 +24,15 @@ class SearchPage extends Component {
     return null;
   }
 
-  setErrorMessage(message) {
-    this.setState({
-      address: message,
-      location: {
-        lat: 0,
-        lng: 0,
-      },
-    });
-  }
-
-  startSearch() {
-    geocode(this.state.place)
-      .then(({ status, address, location }) => {
-        switch (status) {
-          case 'OK' : {
-            this.setState({ address, location });
-            // 楽天トラベルAPI call
-            return searchHotelByLocation(location);
-          }
-          case 'ZERO_RESULTS' : {
-            this.setErrorMessage('結果が見つかりませんでした');
-            break;
-          }
-          default: {
-            this.setErrorMessage('エラーが発生しました');
-            break;
-          }
-        }
-        return [];  // 本来はpromiseを返すべき
-      })
-      .then((hotels) => {
-        this.setState({ hotels: sortedHotels(hotels, this.state.sortKey) });
-      })
-      .catch(() => {
-        this.setErrorMessage('通信に失敗しました');
-      });
-  }
-
   // 子から渡されたstate(place)を処理
-  handlePlaceSubmit(e) {
-    e.preventDefault();
-    // 親のReact Routerから渡されたhistory API の ラッパーオブジェクトhistory
-    // へアクセスして、pushState をcall。getパラメータを付与
-    this.props.history.push(`/?place=${this.state.place}`);
-    this.startSearch();
-  }
+  // handlePlaceSubmit(e) {
+  //   e.preventDefault();
+  //   // 親のReact Routerから渡されたhistory API の ラッパーオブジェクトhistory
+  //   // へアクセスして、pushState をcall。getパラメータを付与
+  //   this.props.history.push(`/?place=${this.state.place}`);
+  //   this.startSearch();
+  // }
 
-  handleSortKeyChange(sortKey) {
-    this.setState({
-      sortKey,
-      hotels: sortedHotels(this.state.hotels, sortKey),
-    });
-  }
 
   render() {
     // console.log(this.props);
@@ -121,34 +41,39 @@ class SearchPage extends Component {
         <h1 className="app-title">ホテル検索</h1>
         {/* 子に渡すpropsが関数の場合、子のstateを引数に入れることで、 */}
         {/* 子 => 親へstateを渡す事ができる */}
-        <SearchForm
-          onSubmit={e => this.handlePlaceSubmit(e)}
-        />
-        {/*
+        <SearchForm />
         <div className="result-area">
-          <Map location={this.state.location} />
+          <Map location={this.props.geocodeResult.location} />
           <div className="result-right">
             <GeocodeResult
-              address={this.state.address}
-              location={this.state.location}
+              address={this.props.geocodeResult.address}
+              location={this.props.geocodeResult.location}
             />
             <h2>ホテル検索結果</h2>
-            <HotelsTable
-              hotels={this.state.hotels}
-              sortKey={this.state.sortKey}
-              onSort={sortKey => this.handleSortKeyChange(sortKey)}
-            />
+            <HotelsTable />
           </div>
         </div>
-        */}
       </div>
     );
   }
 }
 
 SearchPage.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  // history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
+  geocodeResult: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    location: PropTypes.shape({
+      lat: PropTypes.number.isRequired,
+      lng: PropTypes.number.isRequired,
+    }),
+  }).isRequired,
 };
 
-export default SearchPage;
+// contextに入っているStoreが保持するstateを、当該componentのpropsへ変換
+const mapStateToProps = state => ({
+  geocodeResult: state.geocodeResult,
+});
+
+// Storeが保持するstateとaction dispatcherを当該componentに結合
+export default connect(mapStateToProps)(SearchPage);

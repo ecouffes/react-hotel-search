@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import _ from 'lodash';
 
 import HotelRow from './HotelRow';
 import HotelsClickableTh from './HotelsClickableTh';
 
-const HotelsTable = ({ hotels, sortKey, onSort }) => (
+const HotelsTable = ({ hotels }) => (
   <table>
     <tbody>
       <tr>
@@ -13,14 +16,10 @@ const HotelsTable = ({ hotels, sortKey, onSort }) => (
         <HotelsClickableTh
           label="値段"
           sortKey="price"
-          isSelected={sortKey === 'price'}
-          onSort={key => onSort(key)}
         />
         <HotelsClickableTh
           label="レビュー"
           sortKey="reviewAverage"
-          isSelected={sortKey === 'reviewAverage'}
-          onSort={key => onSort(key)}
         />
         <th>レビュー件数</th>
         <th>距離</th>
@@ -33,12 +32,25 @@ const HotelsTable = ({ hotels, sortKey, onSort }) => (
 
 HotelsTable.propTypes = {
   hotels: PropTypes.arrayOf(PropTypes.any),
-  sortKey: PropTypes.string.isRequired,
-  onSort: PropTypes.func.isRequired,
 };
 
 HotelsTable.defaultProps = {
   hotels: [],
 };
 
-export default HotelsTable;
+/**
+ * 配列要素をソートする
+ * @param hotels {Array}    配列
+ * @param sortKey {String}  配列要素のキー
+ * @return {*|Array}
+ */
+const sortedHotels = (hotels, sortKey) => _.sortBy(hotels, hotel => hotel[sortKey]);
+
+// contextに入っているStoreが保持するstateを、当該componentのpropsへ変換
+const mapStateToProps = state => ({
+  hotels: sortedHotels(state.hotels, state.sortKey),
+});
+
+// Storeが保持するstateとaction dispatcherを当該componentに結合
+export default connect(mapStateToProps)(HotelsTable);
+
