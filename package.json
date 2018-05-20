@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server"
+    "build": "webpack",
+    "dev": "webpack-dev-server"
   },
   "dependencies": {
     "axios": "^0.16.2",

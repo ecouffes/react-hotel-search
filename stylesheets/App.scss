@@ -14,6 +14,10 @@
     margin-right: $base-margin;
     padding-right: $base-margin;
     border-right: 1px solid #ccc;
+
+    & > li {
+        width: 5rem;
+    }
 }
 
 .result-area {
